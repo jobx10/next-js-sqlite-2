@@ -1,0 +1,37 @@
+name: Deploy Next.js to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16' # Adjust Node.js version if necessary
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: build
+        run: npm run build
+
+      - name: reset-database
+        run: npm run reset-database
+
+      - name: Build and export
+        run: npm run deploy
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: out # This is the default output directory for next export
+          token: ${{ secrets.GITHUB_TOKEN }}
+          target_branch: gh-pages
